@@ -264,6 +264,71 @@
     link.addEventListener('click', function (event) { event.preventDefault(); });
   });
 
+  /* ---- Smooth wheel scrolling ---------------------------------------------
+     Eases mouse-wheel / trackpad scrolling toward its target instead of
+     jumping. It drives the browser's own scroll position (no transforms), so
+     sticky elements, lazy images and the fade-ins behave exactly as before.
+     Only for mouse/trackpad devices; touch screens keep native momentum and
+     reduced-motion users keep native scrolling. */
+  var finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (finePointer && !reducedMotion && window.requestAnimationFrame) {
+    var EASE_MS = 120;            // lower = snappier, higher = lazier
+    var scrollTarget = 0;
+    var scrollCurrent = 0;
+    var scrollFrame = null;
+    var lastFrameTime = 0;
+
+    var jumpTo = function (y) {
+      try { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); }
+      catch (err) { window.scrollTo(0, y); }
+    };
+    var stopSmoothScroll = function () {
+      if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+      scrollFrame = null;
+    };
+    var stepSmoothScroll = function (now) {
+      var dt = Math.min(now - lastFrameTime, 64);
+      lastFrameTime = now;
+      scrollCurrent += (scrollTarget - scrollCurrent) * (1 - Math.exp(-dt / EASE_MS));
+      if (Math.abs(scrollTarget - scrollCurrent) < 0.5) {
+        jumpTo(scrollTarget);
+        scrollFrame = null;
+        return;
+      }
+      jumpTo(scrollCurrent);
+      scrollFrame = window.requestAnimationFrame(stepSmoothScroll);
+    };
+
+    window.addEventListener('wheel', function (event) {
+      if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      // Leave the popup (and anything else that scrolls on its own) alone.
+      if ((dialog && dialog.open) || (event.target.closest && event.target.closest('dialog'))) return;
+
+      var delta = event.deltaY;
+      if (event.deltaMode === 1) delta *= 40;
+      else if (event.deltaMode === 2) delta *= window.innerHeight;
+
+      var limit = document.documentElement.scrollHeight - window.innerHeight;
+      if (!scrollFrame) scrollTarget = scrollCurrent = window.scrollY;
+      scrollTarget = Math.max(0, Math.min(limit, scrollTarget + delta));
+
+      event.preventDefault();
+      if (!scrollFrame) {
+        lastFrameTime = window.performance.now();
+        scrollFrame = window.requestAnimationFrame(stepSmoothScroll);
+      }
+    }, { passive: false });
+
+    // Any other way of scrolling (keyboard, scrollbar drag, in-page links) takes over immediately.
+    ['keydown', 'mousedown', 'touchstart'].forEach(function (type) {
+      window.addEventListener(type, stopSmoothScroll, { passive: true });
+    });
+    window.addEventListener('click', function (event) {
+      if (event.target.closest && event.target.closest('a[href^="#"]')) stopSmoothScroll();
+    }, true);
+  }
+
   /* ---- Copyright year (the existing page renders the current year) ------ */
   document.querySelectorAll('[data-year]').forEach(function (el) {
     el.textContent = String(new Date().getFullYear());

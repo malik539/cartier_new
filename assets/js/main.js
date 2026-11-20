@@ -18,21 +18,28 @@
     window.location.href = new URL('thank-you' + window.location.search, window.location.href).href;
   }
 
-  var MIN_HEIGHT = {};
-  MIN_HEIGHT['inline-' + FORM_ID] = 560;
-  MIN_HEIGHT['modal-' + FORM_ID] = 540;
+  // The form reports a height that is a little shorter than its own page, which
+  // leaves a scrollbar inside the frame. Keep each frame taller than the report.
+  var FORM_FRAMES = ['inline-' + FORM_ID, 'modal-' + FORM_ID];
+  var FORM_HEIGHT_BUFFER = 72;
+  function fitFrame(frame, reported) {
+    if (frame && reported > 0) frame.style.minHeight = Math.ceil(reported + FORM_HEIGHT_BUFFER) + 'px';
+  }
 
   window.addEventListener('message', function (event) {
     var data = event.data;
     if (!data) return;
 
-    // The form reports its height; apply it to whichever of our iframes sent it.
+    // "[iFrameSizer]<iframe id>:<height>:<width>:<type>" from the SmileHub embed.
+    if (typeof data === 'string' && data.indexOf('[iFrameSizer]') === 0) {
+      var parts = data.slice('[iFrameSizer]'.length).split(':');
+      if (FORM_FRAMES.indexOf(parts[0]) !== -1) fitFrame(document.getElementById(parts[0]), parseFloat(parts[1]));
+    }
+    // Older message shape the existing page listened for.
     if (typeof data === 'object' && typeof data.height === 'number') {
-      Object.keys(MIN_HEIGHT).forEach(function (id) {
+      FORM_FRAMES.forEach(function (id) {
         var frame = document.getElementById(id);
-        if (frame && frame.contentWindow === event.source) {
-          frame.style.height = Math.max(data.height, MIN_HEIGHT[id]) + 'px';
-        }
+        if (frame && frame.contentWindow === event.source) fitFrame(frame, data.height);
       });
     }
 

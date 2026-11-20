@@ -18,6 +18,9 @@ assets/video/           hero clinic video, re-encoded to 720p (3 MB; the origina
 Upload the folder as-is to any static host (Vercel, Netlify, Cloudflare Pages, S3…) at the root of the
 domain. `/thank-you` must resolve to `thank-you/index.html` (the default on those hosts).
 
+After editing `styles.css` or `main.js`, bump the `?v=` number on their links in both HTML files so
+browsers don't pair the new page with a cached old stylesheet or script.
+
 Preview locally:
 
 ```bash

@@ -160,8 +160,8 @@
 
   /* ---- Reviews ticker -----------------------------------------------------
      Clones the review cards into a seamless loop that drifts slowly and
-     pauses on hover, keyboard focus, an open "Read more", or the Pause
-     button. Reduced-motion users keep the static cards. */
+     pauses on hover, keyboard focus, touch, or the Pause button, so the
+     full reviews can be read. Reduced-motion users keep the static cards. */
   var ticker = document.querySelector('[data-ticker]');
   var track = ticker && ticker.querySelector('[data-ticker-track]');
   var tickerToggle = document.querySelector('[data-ticker-toggle]');
@@ -184,18 +184,31 @@
           var clone = card.cloneNode(true);
           clone.setAttribute('aria-hidden', 'true');
           clone.removeAttribute('role');
-          clone.querySelectorAll('summary, a, button').forEach(function (el) { el.setAttribute('tabindex', '-1'); });
           track.appendChild(clone);
         });
       }
-      var SPEED = 38; // px per second
+      var SPEED = window.innerWidth < 640 ? 26 : 38; // px per second
       track.style.setProperty('--ticker-duration', Math.round((setWidth * setsPerHalf) / SPEED) + 's');
 
       var userPaused = false;
+      var touchPaused = false;
+      var touchTimer = null;
       var updatePaused = function () {
-        ticker.classList.toggle('is-paused', userPaused || !!track.querySelector('details[open]'));
+        ticker.classList.toggle('is-paused', userPaused || touchPaused);
       };
-      track.addEventListener('toggle', updatePaused, true);
+      // Touch screens have no hover: hold a finger on the reviews to stop them,
+      // and they move on a few seconds after it lifts.
+      ticker.addEventListener('touchstart', function () {
+        window.clearTimeout(touchTimer);
+        touchPaused = true;
+        updatePaused();
+      }, { passive: true });
+      var releaseTouch = function () {
+        window.clearTimeout(touchTimer);
+        touchTimer = window.setTimeout(function () { touchPaused = false; updatePaused(); }, 4000);
+      };
+      ticker.addEventListener('touchend', releaseTouch, { passive: true });
+      ticker.addEventListener('touchcancel', releaseTouch, { passive: true });
 
       if (tickerToggle) {
         tickerToggle.hidden = false;

@@ -496,6 +496,15 @@ body { padding-bottom: 76px; }
   .location { padding-inline: 20px; }
 }
 
+/* Stacked (phone / small tablet) hero: the video sits between the offer line and the button. */
+@media (max-width: 899px) {
+  .hero-grid { gap: 0; justify-items: start; }
+  .hero-copy { display: contents; }
+  .hero-video { order: 1; justify-self: stretch; width: 100%; margin-top: 28px; }
+  .hero-cta { order: 2; margin-top: 28px; }
+  .hero-proof { order: 3; }
+}
+
 @media (min-width: 640px) {
   :root { --gutter: 32px; }
   .tiles-3 { grid-template-columns: repeat(3, 1fr); }

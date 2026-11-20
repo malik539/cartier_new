@@ -16,6 +16,7 @@
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
 <link rel="preconnect" href="https://link.smilehub.io">
+<link rel="preload" as="image" href="assets/img/clinic-video-poster-1280.webp" type="image/webp">
 <link rel="preload" href="assets/fonts/cormorant-garamond-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/styles.css">
@@ -67,6 +68,11 @@ function gtag_report_conversion(url) {
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.500v15l12-7.500z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14"/><path d="M16 5v14"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.500 8.500a5 5 0 0 1 0 7"/><path d="M18.500 5.500a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-muted" viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6"/><path d="M16 9l6 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
 </svg>
 
@@ -114,16 +120,17 @@ function gtag_report_conversion(url) {
       </div>
     </div>
 
-    <div class="form-card" id="book" tabindex="-1">
-      <div class="form-card-head">
-        <h2>Schedule Your Free Consultation</h2>
-        <p><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg> 100% Free · No Obligation</p>
+    <figure class="hero-video">
+      <div class="video-frame">
+        <!-- Clinic video from the existing page, re-encoded to 720p (original: 73 MB). -->
+        <video src="assets/video/cartier-clinic-720.mp4" poster="assets/img/clinic-video-poster-1280.webp" width="1280" height="720" muted loop playsinline controls preload="none" aria-label="The Cartier Experience Inside Our Clinic" data-hero-video></video>
+        <div class="video-controls" hidden data-video-controls>
+          <button type="button" class="video-btn" data-video-play aria-label="Play video"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></button>
+          <button type="button" class="video-btn" data-video-mute aria-label="Unmute video"><svg class="icon" aria-hidden="true"><use href="#i-muted"/></svg></button>
+        </div>
       </div>
-      <!-- SmileHub form embed: same form ID, attributes and embed script as the existing page. Do not edit. -->
-      <div class="form-frame">
-        <iframe src="https://link.smilehub.io/widget/form/3PoF8FP86X7OfRoyfHb0" style="width:100%;height:680px;border:none" id="inline-3PoF8FP86X7OfRoyfHb0" data-layout="{&quot;id&quot;:&quot;INLINE&quot;}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="LPF - Basic $500 Off + Complimentary Teeth Whitening - New" data-layout-iframe-id="inline-3PoF8FP86X7OfRoyfHb0" data-form-id="3PoF8FP86X7OfRoyfHb0" data-cookie-consent="true" data-cookie-consent-provider="auto" title="LPF - Basic $500 Off + Complimentary Teeth Whitening - New"></iframe>
-      </div>
-    </div>
+      <figcaption>The Cartier Experience Inside Our Clinic</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -388,7 +395,10 @@ function gtag_report_conversion(url) {
       </div>
     </div>
 
-    <div class="reviews reveal" role="list">
+  </div>
+
+  <div class="ticker reveal" data-ticker>
+    <div class="reviews" role="list" data-ticker-track>
       <article class="review" role="listitem">
         <h3>“Results are truly amazing on both my children”</h3>
         <details class="more">
@@ -431,6 +441,9 @@ function gtag_report_conversion(url) {
         </footer>
       </article>
     </div>
+  </div>
+  <div class="container ticker-controls">
+    <button type="button" class="ticker-toggle" hidden data-ticker-toggle aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-pause"/></svg><span>Pause</span></button>
   </div>
 </section>
 
@@ -564,9 +577,31 @@ function gtag_report_conversion(url) {
   </div>
 </section>
 
+<!-- 12. BOOKING FORM ========================================== -->
+<section class="section book" id="book" tabindex="-1" aria-labelledby="book-title">
+  <div class="container book-grid">
+    <div class="book-copy reveal">
+      <p class="eyebrow">Free Consultations</p>
+      <h2 id="book-title">Schedule Your Free Consultation</h2>
+      <p class="lede">Lock in your $500 promotional credit + complimentary exam &amp; digital scan.</p>
+      <dl class="phones book-phones">
+        <div><dt>Southampton</dt><dd><a href="tel:6316192162">631-619-2162</a></dd></div>
+        <div><dt>Wainscott</dt><dd><a href="tel:6316007930">631-600-7930</a></dd></div>
+      </dl>
+    </div>
+    <div class="form-card reveal">
+      <p class="form-card-note"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg> 100% Free · No Obligation</p>
+      <!-- SmileHub form embed: same form ID, attributes and embed script as the existing page. Do not edit. -->
+      <div class="form-frame">
+        <iframe src="https://link.smilehub.io/widget/form/3PoF8FP86X7OfRoyfHb0" style="width:100%;height:680px;border:none" id="inline-3PoF8FP86X7OfRoyfHb0" data-layout="{&quot;id&quot;:&quot;INLINE&quot;}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="LPF - Basic $500 Off + Complimentary Teeth Whitening - New" data-layout-iframe-id="inline-3PoF8FP86X7OfRoyfHb0" data-form-id="3PoF8FP86X7OfRoyfHb0" data-cookie-consent="true" data-cookie-consent-provider="auto" title="LPF - Basic $500 Off + Complimentary Teeth Whitening - New"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
-<!-- 12. FOOTER ================================================ -->
+<!-- 13. FOOTER ================================================ -->
 <footer class="site-footer">
   <div class="container footer-inner">
     <img src="assets/img/logo-full.webp" width="360" height="407" alt="Cartier Orthodontics" class="footer-logo" loading="lazy" decoding="async">
@@ -590,6 +625,19 @@ function gtag_report_conversion(url) {
   <a class="btn btn-outline" href="tel:6316192162"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>Call</a>
   <a class="btn btn-primary" href="#book" data-book>Book Free Consultation</a>
 </div>
+
+<!-- Booking popup: opened by every "Book Free Consultation" button. The form iframe is created on first open
+     with the same attributes the existing page uses for its popup form. -->
+<dialog class="book-dialog" id="book-dialog" aria-labelledby="book-dialog-title">
+  <div class="book-dialog-head">
+    <div>
+      <h2 id="book-dialog-title">Schedule Your Free Consultation</h2>
+      <p><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg> 100% Free · No Obligation</p>
+    </div>
+    <button type="button" class="dialog-close" data-dialog-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+  </div>
+  <div class="book-dialog-body" data-dialog-frame></div>
+</dialog>
 
 <script src="assets/js/main.js" defer></script>
 <!-- SmileHub form embed script: same file the existing page loads (handles iframe sizing and passes URL parameters to the form). -->

@@ -7,9 +7,10 @@ Static site: no build step, no dependencies.
 index.html              landing page
 thank-you/index.html    post-submit page (served at /thank-you)
 assets/css/styles.css   all styles
-assets/js/main.js       form redirect, fade-in, mobile bar
+assets/js/main.js       form popup + redirect, hero video, review ticker, fade-in, mobile bar
 assets/img/             compressed WebP versions of the existing page's images
 assets/fonts/           self-hosted Cormorant Garamond + Jost (latin, variable)
+assets/video/           hero clinic video, re-encoded to 720p (3 MB; the original is 73 MB)
 ```
 
 ## Deploy
@@ -29,7 +30,9 @@ python3 -m http.server 8000
   `gtag_report_conversion()` (in the `<head>` of both pages).
 - **Lead conversion event** `AW-18036592609/Quh3CKKXo58dEOGfwphD` on the thank-you page.
 - **SmileHub form** `3PoF8FP86X7OfRoyfHb0`: same iframe, same attributes, same `form_embed.js`.
-  Fields and form styling are managed in SmileHub, not in this repo.
+  Fields and form styling are managed in SmileHub, not in this repo. As on the old page it appears
+  twice: inline above the footer (`inline-…`) and in the popup every "Book Free Consultation" button
+  opens (`modal-…`, created by `main.js` on first open).
 - **Submit handling**: same detection as the old page — when the form reports a submission the visitor
   goes to `/thank-you`. The current query string (e.g. `?=wc`, `gclid`, `utm_*`) is carried along.
 - **Phone numbers** are real text inside `tel:` links so Google's number swapping keeps working.
